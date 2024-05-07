@@ -5,50 +5,55 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class Archivo {
-
+public class Main {
     public static void main(String[] args) {
-        // Nombre del archivo
+        // Ruta de la carpeta donde se creará el archivo
+        String carpeta = "/ruta/de/la/carpeta";
+        
+        // Nombre del archivo a crear
         String nombreArchivo = "archivo.txt";
-
+        
         // Contenido a escribir en el archivo
-        String contenido = "Hola, este es un archivo de ejemplo.";
-
-        // Escribir en el archivo
-        escribirArchivo(nombreArchivo, contenido);
-
+        String contenido = "¡Hola, mundo desde Java!";
+        
+        // Crear el archivo en la carpeta especificada
+        crearArchivo(carpeta, nombreArchivo, contenido);
+        
         // Leer el archivo
-        String contenidoLeido = leerArchivo(nombreArchivo);
-        System.out.println("Contenido del archivo:");
-        System.out.println(contenidoLeido);
+        leerArchivo(carpeta, nombreArchivo);
     }
-
-    // Método para escribir en el archivo
-    public static void escribirArchivo(String nombreArchivo, String contenido) {
+    
+    public static void crearArchivo(String carpeta, String nombreArchivo, String contenido) {
         try {
-            FileWriter escritor = new FileWriter(nombreArchivo);
+            File directorio = new File(carpeta);
+            if (!directorio.exists()) {
+                directorio.mkdirs();
+            }
+            
+            File archivo = new File(directorio, nombreArchivo);
+            FileWriter escritor = new FileWriter(archivo);
             escritor.write(contenido);
             escritor.close();
-            System.out.println("Se ha escrito en el archivo correctamente.");
+            
+            System.out.println("Archivo creado exitosamente en: " + archivo.getAbsolutePath());
         } catch (IOException e) {
-            System.out.println("Ocurrió un error al escribir en el archivo: " + e.getMessage());
+            System.out.println("Error al crear el archivo: " + e.getMessage());
         }
     }
-
-    // Método para leer el archivo
-    public static String leerArchivo(String nombreArchivo) {
-        StringBuilder contenido = new StringBuilder();
+    
+    public static void leerArchivo(String carpeta, String nombreArchivo) {
         try {
-            FileReader lector = new FileReader(nombreArchivo);
+            File archivo = new File(carpeta, nombreArchivo);
+            FileReader lector = new FileReader(archivo);
             BufferedReader buffer = new BufferedReader(lector);
             String linea;
+            System.out.println("Contenido del archivo:");
             while ((linea = buffer.readLine()) != null) {
-                contenido.append(linea).append("\n");
+                System.out.println(linea);
             }
             buffer.close();
         } catch (IOException e) {
-            System.out.println("Ocurrió un error al leer el archivo: " + e.getMessage());
+            System.out.println("Error al leer el archivo: " + e.getMessage());
         }
-        return contenido.toString();
     }
 }
